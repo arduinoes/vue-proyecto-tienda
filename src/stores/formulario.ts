@@ -2,14 +2,23 @@ import { defineStore } from "pinia";
 import { collection, getDocs, addDoc, deleteDoc, doc, getDoc, updateDoc  } from 'firebase/firestore';
 import { db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { useRoute } from 'vue-router'
+import type { Product } from '../shared/Interface'
 
-const router = useRoute()
+interface TiposEstado {
+  file: any | null;
+  datoImagen: any | null;
+  error: string| null;
+  editar: boolean;
+  loading: boolean;
+  urlDescarga: string;
+  ages: string[];
+  productos: Product[];
+  producto: Product;
+}
 
 export const memoria = defineStore({
   id: "principal",
-
-  state: () => ({
+  state: (): TiposEstado => ({
     file: null,
     datoImagen: null,
     error: null,
@@ -17,38 +26,46 @@ export const memoria = defineStore({
     loading: false,
     urlDescarga: '',
 
+    ages: [
+      '2 anos',
+      '3 anos',
+      '4 anos',
+      'Todas as idades',
+      'Recomendado para adultos'
+      ],
     productos: [],
     producto: {
     id: '',
     title: '',
-    image: '',
     price: '',
     description: '',
-   
-  },
+    category: '',
+    image: '',
+    },
   }),
   actions: {
     async obtenerDatos() {
       this.productos = [];
       const querySnapshot = await getDocs(collection(db, "productos"));
       querySnapshot.forEach((doc) => {
-        let producto = doc.data();
-        producto.id = doc.id;
-        this.productos.push(producto);
-        console.log(producto);
+        let product = doc.data();
+        product.id = doc.id;
+        this.productos.push(product as Product);
+        console.log(product);
       });
     },
     // DELETE / ELIMINAR / BORRAR
-    async eliminarDato(id) {
+    async eliminarDato(id: string) {
       await deleteDoc(doc(db, "productos", id));
-      router.go("/");
+     // router.push("/");
     },
     // GET BY ID / OBTENER POR ID
-    async obtenerDatoID(id) {
+    async obtenerDatoID(id: string) {
       const docRef = doc(db, "productos", id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        this.producto = docSnap.data();
+        this.producto = docSnap.data() as Product;
+        console.log("Obtener por ID: ", docSnap.data());
         this.producto.id = docSnap.id;
       } else {
         console.log("¡No existe el documento!");
@@ -56,7 +73,7 @@ export const memoria = defineStore({
     },
 
     // BUSCAR IMAGEN
-    buscarImagen(event) {
+    buscarImagen(event: any) {
       const tipoArchivo = event.target.files[0].type;
       if (tipoArchivo === "image/jpeg" || tipoArchivo === "image/png") {
         this.file = event.target.files[0];
@@ -68,7 +85,7 @@ export const memoria = defineStore({
       }
       const reader = new FileReader();
       reader.readAsDataURL(this.file);
-      reader.onload = (e) => {
+      reader.onload = (e: any) => {
         this.datoImagen = e.target.result;
       };
     },
@@ -114,8 +131,6 @@ export const memoria = defineStore({
       } catch (error) {
         console.log(error);
       } finally {
-        const router = useRoute()
-        router.push("/");
         this.loading = false;
       }
     },
@@ -163,7 +178,6 @@ export const memoria = defineStore({
       } catch (error) {
         console.log(error);
       } finally {
-        router.push("/");
         this.loading = false;
       }
     },

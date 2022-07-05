@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseInput from "../components/formulario/BaseInput.vue"
+import BaseInput from "../components/formulario/BaseInput.vue";
 import { onMounted } from 'vue';
 import { memoria } from '../stores/formulario'
 
@@ -11,8 +11,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <Navbar/>
   <div class="container my-4">
   <form>
     <BaseInput
@@ -41,7 +39,7 @@ onMounted(() => {
 
       <div class="mt-3">  
     <button v-show="datos.editar === true" 
-      @click.prevent="datos.actualizarDato(id)" 
+      @click.prevent="datos.actualizarDato()" 
       class="btn btn-primary">
       Actualizar
     </button>
@@ -74,7 +72,7 @@ onMounted(() => {
         <td>{{item.title}}</td>
         <td>{{item.price}}</td> 
         <td>
-          <button @click.prevent="datos.obtenerDatoID( item.id );this.datos.editar = !this.datos.editar;" 
+          <button @click.prevent="datos.obtenerDatoID( item.id );datos.editar = !datos.editar;" 
             class="btn btn-primary">Editar
           </button>
         </td>
@@ -87,6 +85,5 @@ onMounted(() => {
       </tr>
     </tbody>
   </table>
-  </div>
 </template>
 

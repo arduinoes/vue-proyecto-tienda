@@ -1,19 +1,29 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import Product from "../views/Product.vue";
-import Cart from "../views/Cart.vue";
-import Formulario from "../views/Formulario.vue";
-
-const routes = [
-  { path: "/", component: Home },
-  { path: "/product/:productId", component: Product },
-  { path: "/cart", component: Cart },
-  { path: "/formulario", component: Formulario },
-];
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      name: 'Home',
+      component: () => import("../views/Home.vue"),
+    },
+    {
+      path: "/product/:productId",
+      name: 'Product',
+      component: () => import("../views/Product.vue")
+    },
+    {
+      path: "/cart",
+      name: 'Cart',
+      component: () => import("../views/Cart.vue")
+    },
+    {
+      path: "/formulario",
+      name: 'Formulario',
+      component: () => import("../views/Formulario.vue")
+    },
+  ]
+})
 
 export default router;

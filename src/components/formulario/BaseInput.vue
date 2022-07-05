@@ -7,13 +7,13 @@
         class="form-control"
         :placeholder="label"
         :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="$emit('update:modelValue', ($event.target as any).value)"
       />
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 defineProps({
   label: {
     type: String,
